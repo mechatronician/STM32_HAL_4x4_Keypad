@@ -8,8 +8,69 @@
 #include "keypad.h"
 
 extern KeypadTypeDef keypad;
+volatile uint32_t msTick;
 
 KeypadGPIO_TypeDef keypad_gpio;
+
+void EXTI15_10_IRQHandler(void)
+{
+	/* USER CODE BEGIN EXTI15_10_IRQn 0 */
+
+	if(!keypad.isPressed)
+	{
+		keypad.isPressed = 1;
+
+		if (__HAL_GPIO_EXTI_GET_IT(keypad_gpio.KeypadColumn1_Pin) != 0x00U)
+		{
+		  getPressedKey(keypad.pressedRow, COL1);
+		  HAL_GPIO_EXTI_IRQHandler(keypad_gpio.KeypadColumn1_Pin);
+		}
+
+		if (__HAL_GPIO_EXTI_GET_IT(keypad_gpio.KeypadColumn2_Pin) != 0x00U)
+		{
+		  getPressedKey(keypad.pressedRow, COL2);
+		  HAL_GPIO_EXTI_IRQHandler(keypad_gpio.KeypadColumn2_Pin);
+		}
+
+		if (__HAL_GPIO_EXTI_GET_IT(keypad_gpio.KeypadColumn3_Pin) != 0x00U)
+		{
+		  getPressedKey(keypad.pressedRow, COL3);
+		  HAL_GPIO_EXTI_IRQHandler(keypad_gpio.KeypadColumn3_Pin);
+		}
+
+		if (__HAL_GPIO_EXTI_GET_IT(keypad_gpio.KeypadColumn4_Pin) != 0x00U)
+		{
+		  getPressedKey(keypad.pressedRow, COL4);
+		  HAL_GPIO_EXTI_IRQHandler(keypad_gpio.KeypadColumn4_Pin);
+		}
+	}
+
+  /* USER CODE END EXTI15_10_IRQn 0 */
+
+  /* USER CODE BEGIN EXTI15_10_IRQn 1 */
+
+  /* USER CODE END EXTI15_10_IRQn 1 */
+}
+
+
+void SysTick_Handler(void)
+{
+  /* USER CODE BEGIN SysTick_IRQn 0 */
+
+	msTick++;
+
+	if(!(msTick % 20))
+	{
+		scanRows();
+	}
+
+  /* USER CODE END SysTick_IRQn 0 */
+	HAL_IncTick();
+  /* USER CODE BEGIN SysTick_IRQn 1 */
+
+  /* USER CODE END SysTick_IRQn 1 */
+}
+
 // Initialize Keypad columns/rows GPIO Ports and GPIO pins.
 void keypad_init(GPIO_TypeDef** gpio_col, uint16_t* col_pin, GPIO_TypeDef** gpio_row, uint16_t* row_pin )
 {
@@ -34,45 +95,6 @@ void keypad_init(GPIO_TypeDef** gpio_col, uint16_t* col_pin, GPIO_TypeDef** gpio
 	keypad_gpio.KeypadRow4_Pin = row_pin[3];
 
 }
-
-// EXTI interrupt callback function..
-// If external interrupt is generated, the program is branched to here.
-void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
-{
-
-	// Firstly, we must determine in which column key was pressed.
-	if(!keypad.isPressed)
-	{
-		keypad.isPressed = 1;
-
-		if(GPIO_Pin == keypad_gpio.KeypadColumn1_Pin )
-		{
-			getPressedKey(keypad.pressedRow, COL1);;
-		}
-
-		else if(GPIO_Pin == keypad_gpio.KeypadColumn2_Pin )
-		{
-			getPressedKey(keypad.pressedRow, COL2);
-		}
-
-		else if(GPIO_Pin == keypad_gpio.KeypadColumn3_Pin )
-		{
-			getPressedKey(keypad.pressedRow, COL3);
-		}
-
-		else if(GPIO_Pin == keypad_gpio.KeypadColumn4_Pin )
-		{
-			getPressedKey(keypad.pressedRow, COL4);
-		}
-	}
-
-}
-
-void HAL_SYSTICK_Callback(void)
-{
-	scanRows();
-}
-
 
 // All rows set HIGH sequentially so that we can determine which key is pressed.
 void scanRows()

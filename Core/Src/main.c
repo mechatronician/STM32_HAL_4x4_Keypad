@@ -45,8 +45,9 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-extern HAL_TickFreqTypeDef uwTickFreq;
+
 KeypadTypeDef keypad;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/

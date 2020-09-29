@@ -38,6 +38,9 @@ default.size.stdout \
 OBJDUMP_LIST += \
 STM32_4x4_Keypad.list \
 
+OBJCOPY_HEX += \
+STM32_4x4_Keypad.hex \
+
 OBJCOPY_BIN += \
 STM32_4x4_Keypad.bin \
 
@@ -61,6 +64,11 @@ STM32_4x4_Keypad.list: $(EXECUTABLES)
 	@echo 'Finished building: $@'
 	@echo ' '
 
+STM32_4x4_Keypad.hex: $(EXECUTABLES)
+	arm-none-eabi-objcopy  -O ihex $(EXECUTABLES) "STM32_4x4_Keypad.hex"
+	@echo 'Finished building: $@'
+	@echo ' '
+
 STM32_4x4_Keypad.bin: $(EXECUTABLES)
 	arm-none-eabi-objcopy  -O binary $(EXECUTABLES) "STM32_4x4_Keypad.bin"
 	@echo 'Finished building: $@'
@@ -71,7 +79,7 @@ clean:
 	-$(RM) *
 	-@echo ' '
 
-secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST) $(OBJCOPY_BIN)
+secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST) $(OBJCOPY_HEX) $(OBJCOPY_BIN)
 
 .PHONY: all clean dependents
 .SECONDARY:

@@ -1,5 +1,5 @@
-keypad.c:14:6:keypad_init	24	static
-keypad.c:40:6:HAL_GPIO_EXTI_Callback	16	static
-keypad.c:71:6:HAL_SYSTICK_Callback	8	static
-keypad.c:78:6:scanRows	16	static
-keypad.c:138:6:getPressedKey	16	static
+keypad.c:15:6:EXTI15_10_IRQHandler	8	static
+keypad.c:56:6:SysTick_Handler	8	static
+keypad.c:75:6:keypad_init	24	static
+keypad.c:100:6:scanRows	16	static
+keypad.c:160:6:getPressedKey	16	static
